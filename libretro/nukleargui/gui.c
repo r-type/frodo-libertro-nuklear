@@ -1,0 +1,50 @@
+/* nuklear - v1.00 - public domain */
+
+extern pauseg;
+
+static void
+gui(struct nk_context *ctx)
+{
+
+struct nk_panel layout;
+        if (nk_begin(ctx, &layout, "Demo", nk_rect(50, 50, 210, 250),
+            NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
+            NK_WINDOW_MINIMIZABLE|NK_WINDOW_TITLE))
+        {
+            enum {EASY, HARD};
+            static int op = EASY;
+            static int property = 20;
+            static char buffer[64];
+            static int len;
+
+            nk_layout_row_static(ctx, 50, 80, 1);
+            if (nk_button_label(ctx, "Return", NK_BUTTON_DEFAULT)){
+                fprintf(stdout, "quit GUI\n");
+		pauseg=0;
+	    }
+            nk_layout_row_dynamic(ctx, 30, 2);
+            if (nk_option_label(ctx, "easy", op == EASY)) op = EASY;
+            if (nk_option_label(ctx, "hard", op == HARD)) op = HARD;
+            nk_layout_row_dynamic(ctx, 25, 1);
+            nk_property_int(ctx, "Compression:", 0, &property, 100, 10, 1);
+            nk_edit_string(ctx, NK_EDIT_SIMPLE, buffer, &len, 64, 0);
+
+            {struct nk_panel combo;
+            nk_layout_row_dynamic(ctx, 30, 1);
+            nk_label(ctx, "background:", NK_TEXT_LEFT);
+            nk_layout_row_dynamic(ctx, 25, 1);
+            if (nk_combo_begin_color(ctx, &combo, background, 400)) {
+                nk_layout_row_dynamic(ctx, 120, 1);
+                background = nk_color_picker(ctx, background, NK_RGBA);
+                nk_layout_row_dynamic(ctx, 25, 1);
+                background.r = (nk_byte)nk_propertyi(ctx, "#R:", 0, background.r, 255, 1,1);
+                background.g = (nk_byte)nk_propertyi(ctx, "#G:", 0, background.g, 255, 1,1);
+                background.b = (nk_byte)nk_propertyi(ctx, "#B:", 0, background.b, 255, 1,1);
+                background.a = (nk_byte)nk_propertyi(ctx, "#A:", 0, background.a, 255, 1,1);
+                nk_combo_end(ctx);
+            }}
+        }
+        nk_end(ctx);
+
+}
+

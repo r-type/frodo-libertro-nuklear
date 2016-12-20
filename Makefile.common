@@ -1,0 +1,53 @@
+INCFLAGS += \
+			-I$(CORE_DIR)/libretro/emu \
+			-I$(CORE_DIR)/libretro/nukleargui \
+			-I$(CORE_DIR)/libretro/nukleargui/sdl_wrapper \
+			-I$(CORE_DIR)/libretro \
+			-I$(CORE_DIR)/Src \
+			-I$(CORE_DIR)
+
+EMU := $(CORE_DIR)/Src
+
+SOURCES_CXX := \
+		$(EMU)/main.cpp $(EMU)/Display.cpp $(EMU)/Prefs.cpp \
+		$(EMU)/SID.cpp $(EMU)/REU.cpp $(EMU)/IEC.cpp $(EMU)/1541fs.cpp \
+        $(EMU)/1541d64.cpp $(EMU)/1541t64.cpp $(EMU)/1541job.cpp \
+		$(EMU)/SAM.cpp $(EMU)/CmdPipe.cpp
+
+SLOBJS  := \
+		$(EMU)/C64.cpp $(EMU)/CPUC64.cpp $(EMU)/VIC.cpp \
+		$(EMU)/CIA.cpp $(EMU)/CPU1541.cpp
+
+PCFLAGS = -DPRECISE_CPU_CYCLES=1 -DPRECISE_CIA_CYCLES=1 -DPC_IS_POINTER=0
+
+SCOBJS  = \
+		$(EMU)/C64_SC.cpp $(EMU)/CPUC64_SC.cpp $(EMU)/VIC_SC.cpp \
+		$(EMU)/CIA_SC.cpp $(EMU)/CPU1541_SC.cpp $(EMU)/CPU_common.cpp
+
+SCFLAGS = -DFRODO_SC
+
+ifeq ($(EMUTYPE), frodosc)
+SOURCES_CXX += $(SCOBJS)
+CPPFLAGS += $(PCFLAGS)
+CPPFLAGS += $(SCFLAGS)
+else
+SOURCES_CXX += $(SLOBJS)
+CPPFLAGS += $(PCFLAGS)
+endif
+
+VERSION   = 4
+REVISION  = 2
+CPPFLAGS +=  -DFRODO_HPUX_REV=0 -DKBD_LANG=0 -fpermissive
+
+CXXFLAGS += $(CPPFLAGS)
+
+SOURCES_CXX += \
+	$(CORE_DIR)/libretro/libretro-core.cpp
+
+SOURCES_C += \
+	$(CORE_DIR)/libretro/nukleargui/sdl_wrapper/SDL_gfxPrimitives.c \
+	$(CORE_DIR)/libretro/nukleargui/sdl_wrapper/retro_surface.c  \
+	$(CORE_DIR)/libretro/nukleargui/app.c
+
+
+
