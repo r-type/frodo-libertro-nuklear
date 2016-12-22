@@ -9,7 +9,6 @@
 #include "VIC.h"
 
 
-#warning RETRO
 /*
  *  Initialization
  */
