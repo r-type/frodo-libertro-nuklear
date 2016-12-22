@@ -93,8 +93,8 @@ void app_frame();
 extern unsigned int *RetroScreen;
 extern int app_init(void);
 extern int app_free(void);
-extern int app_main(void);
-extern int app_event(void);
+extern int app_render(void);
+extern int app_gui_event(void);
 }
 
 int CROP_WIDTH;
@@ -774,8 +774,9 @@ void retro_run(void)
 	#endif
 		TheC64->thread_func();	
    }
+   else app_gui_event();
 
-   app_frame();
+   app_render();
 
    video_cb(Retro_Screen,retrow,retroh,retrow<<PIXEL_BYTES);
 
