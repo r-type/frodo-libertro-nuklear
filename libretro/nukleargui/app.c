@@ -62,7 +62,7 @@ struct nk_context *ctx;
 
 #include "style.c"
 #include "gui.c"
-#include "vkboard.c"
+//#include "vkboard.c"
 
 
 int app_init()
