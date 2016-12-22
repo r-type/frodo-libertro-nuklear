@@ -384,8 +384,14 @@ holdleft=0;
 
 int app_event(){
 
+
+	if(SHOWKEY==1 && pauseg==0) return 0;
+	else if(SHOWKEY==1 && pauseg==1)SHOWKEY=-1;
+
 	nk_input_begin(ctx);
-	app_poll_mouse(1,1);
+
+	if(SHOWKEY==-1 && pauseg==1)	app_poll_mouse(1,1);
+
 	static int lmx=0,lmy=0;
 	if(gmx!=lmx || lmy!=gmy){
 		nk_input_motion(ctx, gmx, gmy);
@@ -397,13 +403,16 @@ int app_event(){
  return 0;
 }
 
+int vkon=0;
 
 int app_vkb_event(){
 
-	if(SHOWKEY==-1) return 0;
-
+	if(SHOWKEY==-1 || pauseg==1) return 0;
+vkon=0;
 	nk_input_begin(ctx);
+
 	app_poll_mouse(0,0);
+
 	static int lmx=0,lmy=0;
 	if(gmx!=lmx || lmy!=gmy){
 		nk_input_motion(ctx, gmx, gmy);
@@ -411,33 +420,29 @@ int app_vkb_event(){
 	}
 	lmx=gmx;lmy=gmy;
 	nk_input_end(ctx);
-
+vkon=1;
  return 0;
 }
 
-int
-app_main()
+int app_main()
 {
+	if( pauseg==0 && SHOWKEY!=1 && vkon==0)return 0;
+
         gui(ctx);
         /* Draw */
-        //nk_color_fv(bg, background);
+        nk_color_fv(bg, background);
         nk_sdl_render(nk_rgba(30,30,30,0));
 
 
     return 0;
 }
 
-void app_vkb_render(){
-
-	vkeyboard(ctx);
-        nk_sdl_render(nk_rgba(30,30,30,0));
-}
-
 void app_frame()
 {
-	if(SHOWKEY==-1) return;
-	//app_event();
-	//app_main();
-	app_vkb_render();
+
+	app_event();
+	app_main();
+
 }
+
 

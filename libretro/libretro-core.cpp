@@ -32,7 +32,7 @@ char RETRO_DIR[512];
 extern void Screen_SetFullUpdate(int scr);
 extern void kbd_buf_feed(char *s);
 extern bool autoboot;
-extern void validkey(int c64_key,int key_up,unsigned char *key_matrix, unsigned char *rev_matrix, unsigned char *joystick);
+//extern void validkey(int c64_key,int key_up,unsigned char *key_matrix, unsigned char *rev_matrix, unsigned char *joystick);
 
 long frame=0;
 unsigned long  Ktime=0 , LastFPSTime=0;
@@ -501,15 +501,15 @@ if(pauseg==0){
       MOUSE_EMULATED=-MOUSE_EMULATED;
    }
 
-/*
+
    i=3;//push r/s
    if ( input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, i) && mbt[i]==0 ){
-      mbt[i]=1;validkey(MATRIX(0,3),0,key_matrix,rev_matrix,joystick);
+      mbt[i]=1;//validkey(MATRIX(0,3),0,key_matrix,rev_matrix,joystick);
    }
    else if ( mbt[i]==1 && ! input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, i) ){
-      mbt[i]=0;validkey(MATRIX(0,3),1,key_matrix,rev_matrix,joystick);      
+      mbt[i]=0;pauseg=1;//validkey(MATRIX(0,3),1,key_matrix,rev_matrix,joystick);      
    }
-*/
+
 #if 0
 
    if(MOUSE_EMULATED==1){
@@ -772,14 +772,10 @@ void retro_run(void)
 	#else
 		for(x=0;x<63*312;x++) 
 	#endif
-		TheC64->thread_func();
+		TheC64->thread_func();	
+   }
 
-        app_frame();
-   }
-   else {
-	app_event();
-	app_main();
-   }
+   app_frame();
 
    video_cb(Retro_Screen,retrow,retroh,retrow<<PIXEL_BYTES);
 
@@ -817,9 +813,7 @@ bool retro_load_game(const struct retro_game_info *info)
    app_init();
 
 	memset(SNDBUF,0,1024*2*2);
-#ifdef __EMSCRIPTEN__ 
-
-#else
+#ifndef __EMSCRIPTEN__ 
 	Emu_init();
 #endif
 
