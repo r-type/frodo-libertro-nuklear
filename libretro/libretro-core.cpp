@@ -774,7 +774,7 @@ void retro_run(void)
 	#endif
 		TheC64->thread_func();	
    }
-   else app_gui_event();
+   else app_event(1);
 
    app_render();
 

@@ -59,6 +59,12 @@ int CTRLON=-1;
 int RSTOPON=-1;
 static int vkx=0,vky=0;
 unsigned int mpal[21];
+
+extern "C" {
+int app_event();
+}
+
+int vkey_pressed;
 #endif
 
 /*
@@ -655,11 +661,6 @@ void C64Display:: Keymap_KeyDown(int symkey,uint8 *key_matrix, uint8 *rev_matrix
 	}
 }
 
-extern "C" {
-int app_vkb_event();
-}
-
-int vkey_pressed;
 
 void app_vkb_handle(uint8 *key_matrix, uint8 *rev_matrix, uint8 *joystick)
 {
@@ -767,7 +768,7 @@ void C64Display::PollKeyboard(uint8 *key_matrix, uint8 *rev_matrix, uint8 *joyst
 
 	app_vkb_handle(key_matrix,rev_matrix,joystick);
 
-	app_vkb_event();
+	app_event(0);
 	
 #if 0
 // VKBD

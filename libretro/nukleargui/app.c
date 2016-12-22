@@ -62,8 +62,6 @@ struct nk_context *ctx;
 
 #include "style.c"
 #include "gui.c"
-//#include "vkboard.c"
-
 
 int app_init()
 {
@@ -385,16 +383,24 @@ holdleft=0;
 int guion=0;
 int vkon=0;
 
-int app_gui_event(){
+int app_event(int type){
 
-	guion=0;
-
-	if(SHOWKEY==1 && pauseg==0) return 0;
-	else if(SHOWKEY==1 && pauseg==1)SHOWKEY=-1;
+	// type gui in pause
+	if(type==1){
+		guion=0;
+		if(SHOWKEY==1 && pauseg==0) return 0;
+		else if(SHOWKEY==1 && pauseg==1)SHOWKEY=-1;		
+	}
+	// type vkbd in game
+	else if(type==0){
+		guion=0;
+		vkon=0;
+		if(SHOWKEY==-1 || pauseg==1) return 0;
+	}
 
 	nk_input_begin(ctx);
 
-	if(SHOWKEY==-1 && pauseg==1)	app_poll_mouse(1,1);
+	app_poll_mouse(type,type);
 
 	static int lmx=0,lmy=0;
 	if(gmx!=lmx || lmy!=gmy){
@@ -404,34 +410,16 @@ int app_gui_event(){
 	lmx=gmx;lmy=gmy;
 	nk_input_end(ctx);
 
-	guion=1;
+	// type gui in pause
+	if(type==1){
+		guion=1;		
+	}
+	// type vkbd in game
+	else if(type==0){
+		vkon=1;
+	}
 
 	return 0;
-}
-
-
-int app_vkb_event(){
-
-	guion=0;
-	vkon=0;
-
-	if(SHOWKEY==-1 || pauseg==1) return 0;
-
-	nk_input_begin(ctx);
-
-	app_poll_mouse(0,0);
-
-	static int lmx=0,lmy=0;
-	if(gmx!=lmx || lmy!=gmy){
-		nk_input_motion(ctx, gmx, gmy);
-		//LOGI("mx:%d my:%d \n",gmx,gmy);
-	}
-	lmx=gmx;lmy=gmy;
-	nk_input_end(ctx);
-
-	vkon=1;
-
- return 0;
 }
 
 int app_render()
