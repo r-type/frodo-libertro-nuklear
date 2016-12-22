@@ -776,7 +776,7 @@ void retro_run(void)
    }
    else app_event(1);
 
-   app_render();
+   if( pauseg==1 || SHOWKEY==1 )app_render();
 
    video_cb(Retro_Screen,retrow,retroh,retrow<<PIXEL_BYTES);
 

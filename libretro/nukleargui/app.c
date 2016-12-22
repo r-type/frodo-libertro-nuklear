@@ -380,23 +380,7 @@ holdleft=0;
  return 0;
 }
 
-int guion=0;
-int vkon=0;
-
 int app_event(int type){
-
-	// type gui in pause
-	if(type==1){
-		guion=0;
-		if(SHOWKEY==1 && pauseg==0) return 0;
-		else if(SHOWKEY==1 && pauseg==1)SHOWKEY=-1;		
-	}
-	// type vkbd in game
-	else if(type==0){
-		guion=0;
-		vkon=0;
-		if(SHOWKEY==-1 || pauseg==1) return 0;
-	}
 
 	nk_input_begin(ctx);
 
@@ -410,29 +394,16 @@ int app_event(int type){
 	lmx=gmx;lmy=gmy;
 	nk_input_end(ctx);
 
-	// type gui in pause
-	if(type==1){
-		guion=1;		
-	}
-	// type vkbd in game
-	else if(type==0){
-		vkon=1;
-	}
-
 	return 0;
 }
 
 int app_render()
 {
-	if( pauseg==0 && SHOWKEY!=1 && vkon==0)return 0;
-	if( pauseg==1 && guion==0)return 0;
-	if( vkon==0 && guion==0)return 0;
 
         gui(ctx);
         /* Draw */
         //nk_color_fv(bg, background);
         nk_sdl_render(nk_rgba(30,30,30,0));
-
 
     return 0;
 }

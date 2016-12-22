@@ -1,6 +1,6 @@
 /* nuklear - v1.00 - public domain */
 
-extern int pauseg,vkon,guion;
+extern int pauseg;
 extern int NPAGE,SHIFTON;
 extern unsigned char *keymat,  *revmat,  *joy;
 extern int vkey_pressed;
@@ -62,7 +62,6 @@ NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
             if (nk_button_label(ctx, "Return", NK_BUTTON_DEFAULT)){
                 fprintf(stdout, "quit GUI\n");
 		pauseg=0;
-		guion=0;
 	    }
             nk_layout_row_dynamic(ctx, 30, 2);
             if (nk_option_label(ctx, "easy", op == EASY)) op = EASY;
