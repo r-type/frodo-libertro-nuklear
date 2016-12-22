@@ -61,7 +61,7 @@ static int vkx=0,vky=0;
 unsigned int mpal[21];
 
 extern "C" {
-int app_event();
+int app_event(int type);
 }
 
 int vkey_pressed;

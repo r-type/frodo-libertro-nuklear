@@ -94,7 +94,7 @@ extern unsigned int *RetroScreen;
 extern int app_init(void);
 extern int app_free(void);
 extern int app_render(void);
-extern int app_gui_event(void);
+extern int app_event(int type);
 }
 
 int CROP_WIDTH;

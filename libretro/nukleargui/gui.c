@@ -1,6 +1,6 @@
 /* nuklear - v1.00 - public domain */
 
-extern pauseg,vkon,guion;
+extern int pauseg,vkon,guion;
 extern int NPAGE,SHIFTON;
 extern unsigned char *keymat,  *revmat,  *joy;
 extern int vkey_pressed;
