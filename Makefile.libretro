@@ -37,7 +37,7 @@ endif
 ifeq ($(platform), unix)
    TARGET := $(TARGET_NAME)_libretro.so
    LDFLAGS += -shared -Wl,--version-script=libretro/link.T -lz
-      CFLAGS += -DLSB_FIRST
+   CFLAGS += -DLSB_FIRST
    fpic = -fPIC
 else ifeq ($(platform), osx)
    TARGET := $(TARGET_NAME)_libretro.dylib
@@ -152,8 +152,8 @@ SOURCES_CXX :=
 include Makefile.common
 
 OBJECTS  = $(SOURCES_CXX:.cpp=.o) $(SOURCES_C:.c=.o)
-CXXFLAGS += -D__LIBRETRO__ $(fpic) $(INCFLAGS) $(COMMONFLAGS)
 CFLAGS   += -D__LIBRETRO__ $(fpic) $(INCFLAGS) $(COMMONFLAGS)
+CXXFLAGS += $(CFLAGS)
 LDFLAGS  += -lm $(fpic)
 
 ifeq ($(platform), theos_ios)

@@ -60,9 +60,8 @@ int RSTOPON=-1;
 static int vkx=0,vky=0;
 unsigned int mpal[21];
 
-extern "C" {
-int app_event(int type);
-}
+extern int app_event(int type);
+
 
 int vkey_pressed;
 #endif

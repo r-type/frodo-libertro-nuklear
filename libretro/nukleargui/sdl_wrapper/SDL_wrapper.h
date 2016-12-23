@@ -137,10 +137,16 @@ static __inline__ unsigned RSDL_Swap32(unsigned x){
 #define RSDL_BYTEORDER RSDL_BIG_ENDIAN
 #endif
 
+#ifdef __cplusplus
+typedef bool RSDL_bool; 
+#define RSDL_FALSE false
+#define RSDL_TRUE  true
+#else
 typedef enum {
 	RSDL_FALSE = 0,
 	RSDL_TRUE  = 1
 } RSDL_bool;
+#endif
 
 #define RSDL_MUSTLOCK(a) 0
 #define RSDL_LockSurface(a) 0

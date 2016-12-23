@@ -88,14 +88,13 @@ extern void quit_frodo_emu();
 int retro_quit=0;
 
 //NUKLEAR APP
-extern "C" {
-void app_frame();
+//extern "C" {
 extern unsigned int *RetroScreen;
 extern int app_init(void);
 extern int app_free(void);
 extern int app_render(void);
 extern int app_event(int type);
-}
+//}
 
 int CROP_WIDTH;
 int CROP_HEIGHT;
