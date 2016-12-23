@@ -60,8 +60,8 @@ struct nk_color background;
 /* GUI */
 struct nk_context *ctx;
 
-#include "style.c"
-#include "gui.c"
+#include "style.i"
+#include "gui.i"
 
 int app_init()
 {
