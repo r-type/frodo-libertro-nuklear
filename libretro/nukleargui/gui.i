@@ -61,15 +61,14 @@ NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
 	// GUI IN PAUSE
 	if(pauseg==1 && SHOWKEY==-1)
         {
-            enum {EASY, HARD};
-            static int op = EASY;
+            enum {ON, OFF};
             static int property = 20;
             static char buffer[64];
             static int len;
 
 	    prefs = new Prefs(ThePrefs);
 
-	    //joystick option
+	    //joystick options
 	    static int joy1on = nk_false;
     	    static int joy2on = nk_false;
     	    static int joyswap = nk_false;
@@ -82,21 +81,30 @@ NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
 		if (ThePrefs.Joystick2Port) { //joy-2
 			joy2on = nk_true;
 		}
-		joy2on = nk_false;
+		else joy2on = nk_false;
 		
 		if ( ThePrefs.JoystickSwap){ //swap
 			joyswap = nk_true;
 		}
-		joyswap = nk_false;
+		else joyswap = nk_false;
+
+	      
+	     //misc options
+	     static int showled = nk_false;
 		
-		
+		if (ThePrefs.ShowLEDs) { 
+			showled = ON;
+		}
+		else showled = OFF;
+
+
             nk_layout_row_static(ctx, 50, 80, 1);
             if (nk_button_label(ctx, "Return", NK_BUTTON_DEFAULT)){
                 fprintf(stdout, "quit GUI\n");
 		pauseg=0;
 	    }
 
-	    //joystick option
+	    //joystick options
             nk_layout_row_dynamic(ctx, 30, 3);
             nk_checkbox_label(ctx, "Joy1 on", &joy1on);
             nk_checkbox_label(ctx, "Joy2 on", &joy2on);
@@ -122,7 +130,21 @@ NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
 		}
 		else if(ThePrefs.JoystickSwap)
 			prefs->	JoystickSwap =false;
-			
+
+		//misc options
+            nk_layout_row_dynamic(ctx, 30, 1);
+            nk_label(ctx, "Show Leds:", NK_TEXT_LEFT);
+            nk_layout_row_dynamic(ctx, 30, 2);
+            if (nk_option_label(ctx, "On", showled == ON)) showled = ON;
+            if (nk_option_label(ctx, "Off", showled == OFF)) showled = OFF;
+
+		if(showled==ON){
+			if(!ThePrefs.ShowLEDs)
+				prefs->	ShowLEDs = true;
+		}
+		else if(ThePrefs.ShowLEDs)
+			prefs->	ShowLEDs =false;
+
             nk_layout_row_dynamic(ctx, 25, 1);
             nk_property_int(ctx, "Compression:", 0, &property, 100, 10, 1);
             nk_edit_string(ctx, NK_EDIT_SIMPLE, buffer, &len, 64, 0);

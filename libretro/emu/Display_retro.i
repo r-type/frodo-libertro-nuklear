@@ -201,40 +201,6 @@ void kbd_buf_update(C64 *TheC64) {
 
 //fautoboot
 
-#if 0
-void virtual_kdb(char *buffer,int vx,int vy)
-{
-
-   int x, y, page;
-   unsigned coul;
-
-#if defined PITCH && PITCH == 4
-unsigned *pix=(unsigned*)buffer;
-#else
-unsigned short *pix=(unsigned short *)buffer;
-#endif
-
-   page = (NPAGE == -1) ? 0 : 50;
-   coul = RGB565(28, 28, 31);
-   BKGCOLOR = (KCOL>0?0xFF808080:0);
-
-
-   for(x=0;x<NPLGN;x++)
-   {
-      for(y=0;y<NLIGN;y++)
-      {
-         DrawBoxBmp((char*)pix,XBASE3+x*XSIDE,YBASE3+y*YSIDE, XSIDE,YSIDE, RGB565(7, 2, 1));
-         Draw_text((char*)pix,XBASE0-2+x*XSIDE ,YBASE0+YSIDE*y,coul, BKGCOLOR ,1, 1,20,
-               SHIFTON==-1?MVk[(y*NPLGN)+x+page].norml:MVk[(y*NPLGN)+x+page].shift);	
-      }
-   }
-
-   DrawBoxBmp((char*)pix,XBASE3+vx*XSIDE,YBASE3+vy*YSIDE, XSIDE,YSIDE, RGB565(31, 2, 1));
-   Draw_text((char*)pix,XBASE0-2+vx*XSIDE ,YBASE0+YSIDE*vy,RGB565(2,31,1), BKGCOLOR ,1, 1,20,
-         SHIFTON==-1?MVk[(vy*NPLGN)+vx+page].norml:MVk[(vy*NPLGN)+vx+page].shift);	
-
-}
-#endif
 
 int check_vkey2(int x,int y)
 {
@@ -319,7 +285,7 @@ void C64Display::NewPrefs(Prefs *prefs)
 void C64Display::Update(void)
 {
 
-if(ThePrefs.ShowLEDs){
+   if(ThePrefs.ShowLEDs){
 
 	// Draw speedometer/LEDs
 //	retro_Rect r = {0, DISPLAY_Y, DISPLAY_X, 15};
@@ -378,21 +344,19 @@ if(ThePrefs.ShowLEDs){
 	draw_string(screen, DISPLAY_X * 4/5 + 8, DISPLAY_Y + 4, "D\x12 11", black, fill_gray);
 	draw_string(screen, 24, DISPLAY_Y + 4, speedometer_string, black, fill_gray);
 
-} //if showleds
+   } //if showleds
 
 	// Update display
 
 	//blit c64 scr 1bit depth to emu scr 4bit depth
 	int x;
-
-	unsigned int * pout =(unsigned int *)Retro_Screen+((ThePrefs.ShowLEDs?0:8)*retrow);
+	int ledw=(ThePrefs.ShowLEDs?0:16);
+	unsigned int * pout =(unsigned int *)Retro_Screen+(ledw*retrow);
 	unsigned char * pin =(unsigned char *)screen->pixels;
 
-	for(x=0;x<screen->w*screen->h;x++)
+	for(x=0;x<screen->w*(screen->h-ledw);x++)
 		*pout++=mpal[*pin++];
 
-	//SHOW VKBD
-	//if(SHOWKEY==1)virtual_kdb(( char *)Retro_Screen,vkx,vky);
 
 }
 
@@ -767,153 +731,7 @@ void C64Display::PollKeyboard(uint8 *key_matrix, uint8 *rev_matrix, uint8 *joyst
 
 	app_vkb_handle(key_matrix,rev_matrix,joystick);
 
-	app_event(0);
-	
-#if 0
-// VKBD
-   int i;
-   //   RETRO        B    Y    SLT  STA  UP   DWN  LEFT RGT  A    X    L    R    L2   R2   L3   R3
-   //   INDEX        0    1    2    3    4    5    6    7    8    9    10   11   12   13   14   15
-   static int oldi=-1;
-
-   if(oldi!=-1)
-   {
-     // IKBD_PressSTKey(oldi,0);
-		validkey(oldi,1,key_matrix,rev_matrix,joystick);
-      oldi=-1;
-   }
-
-   if(SHOWKEY==1)
-   {
-      static int vkflag[5]={0,0,0,0,0};		
-
-      if ( input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_UP) && vkflag[0]==0 )
-         vkflag[0]=1;
-      else if (vkflag[0]==1 && ! input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_UP) )
-      {
-         vkflag[0]=0;
-         vky -= 1; 
-      }
-
-      if ( input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_DOWN) && vkflag[1]==0 )
-         vkflag[1]=1;
-      else if (vkflag[1]==1 && ! input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_DOWN) )
-      {
-         vkflag[1]=0;
-         vky += 1; 
-      }
-
-      if ( input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT) && vkflag[2]==0 )
-         vkflag[2]=1;
-      else if (vkflag[2]==1 && ! input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT) )
-      {
-         vkflag[2]=0;
-         vkx -= 1;
-      }
-
-      if ( input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT) && vkflag[3]==0 )
-         vkflag[3]=1;
-      else if (vkflag[3]==1 && ! input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT) )
-      {
-         vkflag[3]=0;
-         vkx += 1;
-      }
-
-      if(vkx<0)vkx=9;
-      if(vkx>9)vkx=0;
-      if(vky<0)vky=4;
-      if(vky>4)vky=0;
-
-   //  virtual_kdb(( char *)Retro_Screen,vkx,vky);
- 
-      i=8;
-      if(input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, i)  && vkflag[4]==0) 	
-         vkflag[4]=1;
-      else if( !input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, i)  && vkflag[4]==1)
-      {
-         vkflag[4]=0;
-         i=check_vkey2(vkx,vky);
-
-         if(i==-1){
-            oldi=-1;
-		 }
-         if(i==-2)
-         {
-            NPAGE=-NPAGE;oldi=-1;
-            //Clear interface zone					
-            //Screen_SetFullUpdate();
-
-         }
-         else if(i==-3)
-         {
-            //KDB bgcolor
-            //Screen_SetFullUpdate();
-            KCOL=-KCOL;
-            oldi=-1;
-         }
-         else if(i==-4)
-         {
-            //VKbd show/hide 			
-            oldi=-1;
-            Screen_SetFullUpdate(0);
-            SHOWKEY=-SHOWKEY;
-         }
-         else if(i==-5)
-         {
-            //Change Joy number
-            //NUMjoy=-NUMjoy;
-            oldi=-1;
-         }
-         else
-         {
-            if(i==-10) //SHIFT
-            {
- 			   validkey(MATRIX(6,4),(SHIFTON == 1)?1:0,key_matrix,rev_matrix,joystick);
-               SHIFTON=-SHIFTON;
-               //Screen_SetFullUpdate();
-
-               oldi=-1;
-            }
-            else if(i==-11) //CTRL
-            {               
- 			   validkey(MATRIX(7,2),(CTRLON == 1)?1:0,key_matrix,rev_matrix,joystick);
-               CTRLON=-CTRLON;
-               //Screen_SetFullUpdate();
-
-               oldi=-1;
-            }
-			else if(i==-12) //RSTOP
-            {               
- 			   validkey(MATRIX(7,7),(RSTOPON == 1)?1:0,key_matrix,rev_matrix,joystick);
-               RSTOPON=-RSTOPON;
-               //Screen_SetFullUpdate();
-
-               oldi=-1;
-            }
-			else if(i==-13) //AUTOBOOT
-            {     
-          	   kbd_buf_feed("\rLOAD\":*\",8,1:\rRUN\r\0");
-	  		   autoboot=true; 
-               oldi=-1;
-            }
-			else if(i==-14) //GUI
-            {    
-				pauseg=1; 
-               Screen_SetFullUpdate(0);
-               SHOWKEY=-SHOWKEY;
-               oldi=-1;
-            }
-            else
-            {
-               oldi=i;
-		       validkey(oldi,0,key_matrix,rev_matrix,joystick);               
-            }
-
-         }
-      }
-
-  }
-#endif
+	app_event(0);	
 
 }
 

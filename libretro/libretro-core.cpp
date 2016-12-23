@@ -38,7 +38,7 @@ long frame=0;
 unsigned long  Ktime=0 , LastFPSTime=0;
 
 //VIDEO
-unsigned int *Retro_Screen;//[1024*1024];
+unsigned int *Retro_Screen;
 
 //SOUND
 short signed int SNDBUF[1024*2];
@@ -99,8 +99,8 @@ extern int app_event(int type);
 int CROP_WIDTH;
 int CROP_HEIGHT;
 int VIRTUAL_WIDTH;
-int retrow=1024; 
-int retroh=1024;
+int retrow=384; 
+int retroh=288;
 
 #include "vkbd.i"
 
@@ -714,7 +714,7 @@ void retro_get_system_info(struct retro_system_info *info)
 
 void retro_get_system_av_info(struct retro_system_av_info *info)
 {
-   struct retro_game_geometry geom = { retrow, retroh, 1024, 1024,4.0 / 3.0 };
+   struct retro_game_geometry geom = { retrow, retroh, 384, 288,4.0 / 3.0 };
    struct retro_system_timing timing = { 50.0, 44100.0 };
 
    info->geometry = geom;
