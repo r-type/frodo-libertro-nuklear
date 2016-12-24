@@ -69,7 +69,7 @@ NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
 	    static int joy1on = nk_false;
     	    static int joy2on = nk_false;
     	    static int joyswap = nk_false;
-
+	
 		if (ThePrefs.Joystick1Port) { // joy-1
 			joy1on = nk_true;
 		}
@@ -96,6 +96,9 @@ NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
 
 	    //floppy option
 	     static int emu1541 = nk_false;
+	     static char DF8NAME[512]="Choose Content\0";
+	     static char DF9NAME[512]="Choose Content\0";
+
 		if(ThePrefs.Emul1541Proc)emu1541=nk_true;
 		else emu1541=nk_false;
 
@@ -160,29 +163,40 @@ NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
 		}	
 		else if(ThePrefs.Emul1541Proc)
 			prefs->	Emul1541Proc =0;
+	        int i;
 
-	     if(LOADCONTENT!=2){
-
-	    	if(ThePrefs.DrivePath[0]!=NULL){
-		 	sprintf(LCONTENT,"%s\0",prefs->DrivePath[0]);
-		}
-		else sprintf(LCONTENT,"CHOOSE CONTENT\0");
-
-	     }
-
+		for(i=0;i<2;i++)
+			if(LOADCONTENT==2 && LDRIVE==(i+8));
+			else if(ThePrefs.DrivePath[i]!=NULL){
+			 	sprintf((i==0?DF8NAME:DF9NAME),"%s\0",prefs->DrivePath[i]);
+			}
+			//else sprintf(LCONTENT,"Choose Content\0");
+	     
             nk_layout_row_dynamic(ctx, DEFHSZ, 1);
             nk_label(ctx, "DF8:", NK_TEXT_LEFT);
             nk_layout_row_dynamic(ctx, DEFHSZ, 1);
 
-            if (nk_button_label(ctx, LCONTENT, NK_BUTTON_DEFAULT)){
+            if (nk_button_label(ctx, DF8NAME, NK_BUTTON_DEFAULT)){
                 fprintf(stdout, "LOAD DF8\n");
 		LOADCONTENT=1;
+		LDRIVE=8;
+		//pauseg=0;
+	    }
+
+            nk_layout_row_dynamic(ctx, DEFHSZ, 1);
+            nk_label(ctx, "DF9:", NK_TEXT_LEFT);
+            nk_layout_row_dynamic(ctx, DEFHSZ, 1);
+
+            if (nk_button_label(ctx, DF9NAME, NK_BUTTON_DEFAULT)){
+                fprintf(stdout, "LOAD DF9\n");
+		LOADCONTENT=1;
+		LDRIVE=9;
 		//pauseg=0;
 	    }
 	    if(LOADCONTENT==2){
 
-		fprintf(stdout, "LOAD DF8 (%s)\n",LCONTENT);
-		sprintf(prefs->DrivePath[0],"%s\0",LCONTENT);
+		fprintf(stdout, "LOAD DF%d (%s)\n",LDRIVE,LCONTENT);
+		sprintf(prefs->DrivePath[LDRIVE-8],"%s\0",LCONTENT);
 		LOADCONTENT=-1;
 	    }
 

@@ -24,7 +24,7 @@ extern int retrow,retroh;
 extern char RPATH[512];
 
 extern int MOUSE_EMULATED,MOUSEMODE,slowdown;
-#define MOUSE_RELATIVE 0 //0 = absolute
+#define MOUSE_RELATIVE 10 //0 = absolute
 extern int gmx,gmy; // mouse
 int mouse_wu=0,mouse_wd=0;
 int LSHIFTON=-1;
@@ -35,6 +35,7 @@ static char old_Key_Sate[512];
 extern int SHOWKEY;
 int LOADCONTENT=-1;
 char LCONTENT[512];
+int LDRIVE=8;
 
 #define NK_INCLUDE_FIXED_TYPES
 #define NK_INCLUDE_STANDARD_IO
@@ -67,6 +68,54 @@ struct nk_context *ctx;
 #include "style.i"
 #include "filebrowser.i"
 #include "gui.i"
+
+static const char *cross[] = {
+  "X                               ",
+  "XX                              ",
+  "X.X                             ",
+  "X..X                            ",
+  "X...X                           ",
+  "X....X                          ",
+  "X.....X                         ",
+  "X......X                        ",
+  "X.......X                       ",
+  "X........X                      ",
+  "X.....XXXXX                     ",
+  "X..X..X                         ",
+  "X.X X..X                        ",
+  "XX  X..X                        ",
+  "X    X..X                       ",
+  "     X..X                       ",
+  "      X..X                      ",
+  "      X..X                      ",
+  "       XX                       ",
+  "                                ",
+};
+
+void DrawPointBmp(unsigned int *buffer,int x, int y, unsigned int color)
+{
+   int idx;
+
+   idx=x+y*rwidth;
+   if(idx>=0 && idx<rwidth*rheight)
+   	buffer[idx]=color;	
+}
+
+void draw_cross(int x,int y) {
+
+	int i,j,idx;
+	int dx=32,dy=20;
+	unsigned  short color;
+
+	for(j=y;j<y+dy;j++){
+		idx=0;
+		for(i=x;i<x+dx;i++){
+			if(cross[j-y][idx]=='.')DrawPointBmp(Retro_Screen,i,j,0xffffffff);
+			else if(cross[j-y][idx]=='X')DrawPointBmp(Retro_Screen,i,j,0);
+			idx++;			
+		}
+	}
+}
 
 int app_init()
 {
@@ -411,6 +460,8 @@ int app_render()
         /* Draw */
         //nk_color_fv(bg, background);
 	nk_sdl_render(nk_rgba(0,0,0,0));
+
+	draw_cross(gmx,gmy);
 
     return 0;
 }
