@@ -21,6 +21,8 @@ extern int retrow,retroh;
 #define rwidth retrow
 #define rheight retroh
 
+extern char RPATH[512];
+
 extern int MOUSE_EMULATED,MOUSEMODE,slowdown;
 #define MOUSE_RELATIVE 0 //0 = absolute
 extern int gmx,gmy; // mouse
@@ -31,6 +33,8 @@ extern char Key_Sate[512];
 extern char Key_Sate2[512];
 static char old_Key_Sate[512];
 extern int SHOWKEY;
+int LOADCONTENT=-1;
+char LCONTENT[512];
 
 #define NK_INCLUDE_FIXED_TYPES
 #define NK_INCLUDE_STANDARD_IO
@@ -61,6 +65,7 @@ struct nk_color background;
 struct nk_context *ctx;
 
 #include "style.i"
+#include "filebrowser.i"
 #include "gui.i"
 
 int app_init()
@@ -74,13 +79,13 @@ int app_init()
     ctx = nk_sdl_init(screen_surface);
 
     /* style.c */
-    /*set_style(ctx, THEME_WHITE);*/
-    /*set_style(ctx, THEME_RED);*/
-    /*set_style(ctx, THEME_BLUE);*/
-    /*set_style(ctx, THEME_DARK);*/
+    /* THEME_BLACK, THEME_WHITE, THEME_RED, THEME_BLUE, THEME_DARK */
      set_style(ctx, THEME_DARK);
 
     /* icons */
+
+     filebrowser_init();
+     sprintf(LCONTENT,"%s\0",RPATH);
 
 //    background = nk_rgb(28,48,62);
 
@@ -102,7 +107,7 @@ int app_init()
 int app_free()
 {
 //FIXME: memory leak here
-
+    filebrowser_free();
     nk_sdl_shutdown();
     Retro_FreeSurface(screen_surface);
 
@@ -401,9 +406,12 @@ int app_render()
 {
 
         gui(ctx);
+	if(LOADCONTENT==1)filebrowser(ctx);
+
         /* Draw */
         //nk_color_fv(bg, background);
-        nk_sdl_render(nk_rgba(30,30,30,0));
+        //nk_sdl_render(nk_rgba(30,30,30,0));
+	nk_sdl_render(nk_rgba(0,0,0,0));
 
     return 0;
 }

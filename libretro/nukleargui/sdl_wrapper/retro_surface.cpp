@@ -149,14 +149,14 @@ printf("create surface XR8G8B8 libretro\n");
    bitmp->format->Bloss=0;
    bitmp->format->Aloss=0;
 
-   bitmp->format->Rshift=0;
+   bitmp->format->Rshift=16;
    bitmp->format->Gshift=8;
-   bitmp->format->Bshift=16;
+   bitmp->format->Bshift=0;
    bitmp->format->Ashift=24;
 
-   bitmp->format->Rmask=0x000000ff;
+   bitmp->format->Rmask=0x00ff0000;   
    bitmp->format->Gmask=0x0000ff00;
-   bitmp->format->Bmask=0x00ff0000;
+   bitmp->format->Bmask=0x000000ff;
    bitmp->format->Amask=0xff000000;
 
 /*

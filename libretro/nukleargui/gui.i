@@ -19,7 +19,7 @@ gui(struct nk_context *ctx)
 {
    struct nk_panel layout;
 
- if (nk_begin(ctx, &layout, "Keyboard", nk_rect(10, 50, 364, 210),
+ if (nk_begin(ctx, &layout, "Frodo GUI", nk_rect(10, 50, 364, 210),
 NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
             NK_WINDOW_MINIMIZABLE|NK_WINDOW_TITLE))
  //       NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR|NK_WINDOW_MOVABLE))
@@ -57,12 +57,11 @@ NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
 
 
     	}
-
+	else
 	// GUI IN PAUSE
-	if(pauseg==1 && SHOWKEY==-1)
+	if(pauseg==1 && SHOWKEY==-1 && LOADCONTENT!=1)
         {
-            enum {ON, OFF};
-            static int property = 20;
+             static int property = 20;
             static char buffer[64];
             static int len;
 
@@ -93,15 +92,26 @@ NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
 	     static int showled = nk_false;
 		
 		if (ThePrefs.ShowLEDs) { 
-			showled = ON;
+			showled = nk_true;
 		}
-		else showled = OFF;
+		else showled = nk_false;
+
+	    //floppy option
+	     static int emu1541 = nk_false;
+		if(ThePrefs.Emul1541Proc)emu1541=nk_true;
+		else emu1541=nk_false;
 
 
-            nk_layout_row_static(ctx, 50, 80, 1);
-            if (nk_button_label(ctx, "Return", NK_BUTTON_DEFAULT)){
+	    // button toggle GUI/EMU
+            nk_layout_row_static(ctx, 30, 80, 2);
+            if (nk_button_label(ctx, "Resume", NK_BUTTON_DEFAULT)){
                 fprintf(stdout, "quit GUI\n");
 		pauseg=0;
+	    }
+            if (nk_button_label(ctx, "Reset", NK_BUTTON_DEFAULT)){
+                fprintf(stdout, "quit GUI\n");
+		pauseg=0;
+	 	TheC64->Reset();
 	    }
 
 	    //joystick options
@@ -133,36 +143,51 @@ NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
 
 		//misc options
             nk_layout_row_dynamic(ctx, 30, 1);
-            nk_label(ctx, "Show Leds:", NK_TEXT_LEFT);
-            nk_layout_row_dynamic(ctx, 30, 2);
-            if (nk_option_label(ctx, "On", showled == ON)) showled = ON;
-            if (nk_option_label(ctx, "Off", showled == OFF)) showled = OFF;
+            nk_checkbox_label(ctx, "Show LEDs", &showled);
 
-		if(showled==ON){
+		if(showled){
 			if(!ThePrefs.ShowLEDs)
 				prefs->	ShowLEDs = true;
 		}
 		else if(ThePrefs.ShowLEDs)
 			prefs->	ShowLEDs =false;
 
-            nk_layout_row_dynamic(ctx, 25, 1);
-            nk_property_int(ctx, "Compression:", 0, &property, 100, 10, 1);
-            nk_edit_string(ctx, NK_EDIT_SIMPLE, buffer, &len, 64, 0);
-
-            {struct nk_panel combo;
+	    //floppy option
             nk_layout_row_dynamic(ctx, 30, 1);
-            nk_label(ctx, "background:", NK_TEXT_LEFT);
-            nk_layout_row_dynamic(ctx, 25, 1);
-            if (nk_combo_begin_color(ctx, &combo, background, 400)) {
-                nk_layout_row_dynamic(ctx, 120, 1);
-                background = nk_color_picker(ctx, background, NK_RGBA);
-                nk_layout_row_dynamic(ctx, 25, 1);
-                background.r = (nk_byte)nk_propertyi(ctx, "#R:", 0, background.r, 255, 1,1);
-                background.g = (nk_byte)nk_propertyi(ctx, "#G:", 0, background.g, 255, 1,1);
-                background.b = (nk_byte)nk_propertyi(ctx, "#B:", 0, background.b, 255, 1,1);
-                background.a = (nk_byte)nk_propertyi(ctx, "#A:", 0, background.a, 255, 1,1);
-                nk_combo_end(ctx);
-            }}
+            nk_checkbox_label(ctx, "Emulate 1541", &emu1541);
+
+		if(emu1541){
+			if(!ThePrefs.Emul1541Proc)
+				prefs->	Emul1541Proc =1;
+		}	
+		else if(ThePrefs.Emul1541Proc)
+			prefs->	Emul1541Proc =0;
+
+	     if(LOADCONTENT!=2){
+
+	    	if(ThePrefs.DrivePath[0]!=NULL){
+		 	sprintf(LCONTENT,"%s\0",prefs->DrivePath[0]);
+		}
+		else sprintf(LCONTENT,"CHOOSE CONTENT\0");
+
+	     }
+
+            nk_layout_row_dynamic(ctx, 16, 1);
+            nk_label(ctx, "DF8:", NK_TEXT_LEFT);
+            nk_layout_row_dynamic(ctx, 16, 1);
+	 //   nk_layout_row_static(ctx, 30, 80, 1);
+            if (nk_button_label(ctx, LCONTENT, NK_BUTTON_DEFAULT)){
+                fprintf(stdout, "LOAD DF8\n");
+		LOADCONTENT=1;
+		//pauseg=0;
+	    }
+	    if(LOADCONTENT==2){
+
+		fprintf(stdout, "LOAD DF8 (%s)\n",LCONTENT);
+		sprintf(prefs->DrivePath[0],"%s\0",LCONTENT);
+		LOADCONTENT=-1;
+	    }
+
 
 	    if(ThePrefs!=*prefs){
 		printf("pref change \n");
@@ -172,6 +197,7 @@ NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
 
 	    delete prefs;
         }
+
 
    	nk_end(ctx);
    }

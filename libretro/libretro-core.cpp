@@ -500,7 +500,7 @@ if(pauseg==0){
       MOUSE_EMULATED=-MOUSE_EMULATED;
    }
 
-
+/*
    i=3;//push r/s
    if ( input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, i) && mbt[i]==0 ){
       mbt[i]=1;//validkey(MATRIX(0,3),0,key_matrix,rev_matrix,joystick);
@@ -508,7 +508,7 @@ if(pauseg==0){
    else if ( mbt[i]==1 && ! input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, i) ){
       mbt[i]=0;pauseg=1;//validkey(MATRIX(0,3),1,key_matrix,rev_matrix,joystick);      
    }
-
+*/
 #if 0
 
    if(MOUSE_EMULATED==1){
