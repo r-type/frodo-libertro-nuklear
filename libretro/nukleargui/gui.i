@@ -61,10 +61,8 @@ NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
 	// GUI IN PAUSE
 	if(pauseg==1 && SHOWKEY==-1 && LOADCONTENT!=1)
         {
-             static int property = 20;
-            static char buffer[64];
-            static int len;
-
+	    #define DEFHSZ 16
+	    #define DEFWSZ 64
 	    prefs = new Prefs(ThePrefs);
 
 	    //joystick options
@@ -103,7 +101,7 @@ NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
 
 
 	    // button toggle GUI/EMU
-            nk_layout_row_static(ctx, 30, 80, 2);
+            nk_layout_row_static(ctx, DEFHSZ, DEFWSZ, 2);
             if (nk_button_label(ctx, "Resume", NK_BUTTON_DEFAULT)){
                 fprintf(stdout, "quit GUI\n");
 		pauseg=0;
@@ -115,7 +113,7 @@ NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
 	    }
 
 	    //joystick options
-            nk_layout_row_dynamic(ctx, 30, 3);
+            nk_layout_row_dynamic(ctx, DEFHSZ, 3);
             nk_checkbox_label(ctx, "Joy1 on", &joy1on);
             nk_checkbox_label(ctx, "Joy2 on", &joy2on);
             nk_checkbox_label(ctx, "Swap Joy", &joyswap);
@@ -142,7 +140,7 @@ NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
 			prefs->	JoystickSwap =false;
 
 		//misc options
-            nk_layout_row_dynamic(ctx, 30, 1);
+            nk_layout_row_dynamic(ctx, DEFHSZ, 1);
             nk_checkbox_label(ctx, "Show LEDs", &showled);
 
 		if(showled){
@@ -153,7 +151,7 @@ NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
 			prefs->	ShowLEDs =false;
 
 	    //floppy option
-            nk_layout_row_dynamic(ctx, 30, 1);
+            nk_layout_row_dynamic(ctx, DEFHSZ, 1);
             nk_checkbox_label(ctx, "Emulate 1541", &emu1541);
 
 		if(emu1541){
@@ -172,10 +170,10 @@ NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
 
 	     }
 
-            nk_layout_row_dynamic(ctx, 16, 1);
+            nk_layout_row_dynamic(ctx, DEFHSZ, 1);
             nk_label(ctx, "DF8:", NK_TEXT_LEFT);
-            nk_layout_row_dynamic(ctx, 16, 1);
-	 //   nk_layout_row_static(ctx, 30, 80, 1);
+            nk_layout_row_dynamic(ctx, DEFHSZ, 1);
+
             if (nk_button_label(ctx, LCONTENT, NK_BUTTON_DEFAULT)){
                 fprintf(stdout, "LOAD DF8\n");
 		LOADCONTENT=1;

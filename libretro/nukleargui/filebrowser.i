@@ -179,7 +179,7 @@ file_browser_init(struct file_browser *browser)
             size_t l;
             strcpy(browser->desktop, browser->home);
             l = strlen(browser->desktop);
-            strcpy(browser->desktop + l, "desktop/");
+            strcpy(browser->desktop + l, "Desktop/");
         }
         browser->files = dir_list(browser->directory, 0, &browser->file_count);
         browser->directories = dir_list(browser->directory, 1, &browser->dir_count);

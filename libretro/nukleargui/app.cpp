@@ -410,7 +410,6 @@ int app_render()
 
         /* Draw */
         //nk_color_fv(bg, background);
-        //nk_sdl_render(nk_rgba(30,30,30,0));
 	nk_sdl_render(nk_rgba(0,0,0,0));
 
     return 0;
