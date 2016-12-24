@@ -50,6 +50,8 @@ int LDRIVE=8;
 // SDL surface (implementation from SDL_wrapper)
 static RSDL_Surface *screen_surface;
 extern unsigned int *Retro_Screen;
+extern void restore_bgk();
+extern void save_bkg();
 
 /* macros */
 
@@ -141,6 +143,7 @@ int app_init()
  printf("Init nuklear %d\n",0);
 
 //LIBRETRO   
+   //save_bkg();
 
    memset(Key_Sate,0,512);
    memset(Key_Sate2,0,512);
@@ -453,6 +456,7 @@ int app_event(int type){
 
 int app_render()
 {
+	if(pauseg==1)restore_bgk();
 
         gui(ctx);
 	if(LOADCONTENT==1)filebrowser(ctx);

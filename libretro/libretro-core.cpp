@@ -39,6 +39,7 @@ unsigned long  Ktime=0 , LastFPSTime=0;
 
 //VIDEO
 unsigned int *Retro_Screen;
+unsigned int save_Screen[384*288];
 
 //SOUND
 short signed int SNDBUF[1024*2];
@@ -361,9 +362,19 @@ void gui_poll_events(void)
    }
 }
 
+void save_bkg()
+{
+	memcpy(save_Screen,Retro_Screen,4*384*288);
+}
+
+void restore_bgk()
+{
+	memcpy(Retro_Screen,save_Screen,4*384*288);
+}
+
 void enter_gui(void)
 {
-  //save_bkg();
+  save_bkg();
   //	Dialog_DoProperty();
 //	pauseg=0;
 printf("enter gui!\n");
