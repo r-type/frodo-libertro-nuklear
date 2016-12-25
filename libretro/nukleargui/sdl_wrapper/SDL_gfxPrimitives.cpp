@@ -6855,7 +6855,7 @@ void _murphyIteration(RSDL_gfxMurphyIterator *m, Uint8 miter,
 			py[1] = m2y;
 			py[2] = ml1by;
 			py[3] = ml2by;			
-			polygonColor(m->dst, px, py, 4, m->color);						
+			polygonColor(m->dst, (Sint16 *)px,(Sint16 *)py, 4, m->color);						
 		}
 	}
 

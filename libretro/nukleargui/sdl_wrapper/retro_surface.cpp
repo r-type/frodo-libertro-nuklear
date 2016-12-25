@@ -120,14 +120,14 @@ RSDL_Surface *Retro_CreateRGBSurface32( int w,int h, int d, int rm,int rg,int rb
       return NULL;
    }
 
-   bitmp->format = calloc(1,sizeof(*bitmp->format));
+   bitmp->format = (RSDL_PixelFormat *) calloc(1,sizeof(*bitmp->format));
    if (bitmp->format == NULL)
    {
       printf("tex format failed");
       return NULL;
    }
 
-   bitmp->format->palette = calloc(1,sizeof(*bitmp->format->palette));
+   bitmp->format->palette =(RSDL_Palette *) calloc(1,sizeof(*bitmp->format->palette));
    if (bitmp->format->palette == NULL)
    {
       printf("tex format palette failed");
@@ -137,7 +137,7 @@ RSDL_Surface *Retro_CreateRGBSurface32( int w,int h, int d, int rm,int rg,int rb
 printf("create surface XR8G8B8 libretro\n");
 //FIXME: why pal for 32 bits surface ?
   bitmp->format->palette->ncolors=256;
-  bitmp->format->palette->colors=malloc(1024);
+  bitmp->format->palette->colors=(RSDL_Color *)malloc(1024);
   bitmp->format->palette->version=0;
   bitmp->format->palette->refcount=0;
   memset(bitmp->format->palette->colors,0x0,1024);
@@ -210,14 +210,14 @@ RSDL_Surface *Retro_CreateRGBSurface16( int w,int h, int d, int rm,int rg,int rb
       return NULL;
    }
 
-   bitmp->format = calloc(1,sizeof(*bitmp->format));
+   bitmp->format =(RSDL_PixelFormat *) calloc(1,sizeof(*bitmp->format));
    if (bitmp->format == NULL)
    {
       printf("tex format failed");
       return NULL;
    }
 
-   bitmp->format->palette = calloc(1,sizeof(*bitmp->format->palette));
+   bitmp->format->palette = (RSDL_Palette *)calloc(1,sizeof(*bitmp->format->palette));
    if (bitmp->format->palette == NULL)
    {
       printf("tex format palette failed");
@@ -227,7 +227,7 @@ RSDL_Surface *Retro_CreateRGBSurface16( int w,int h, int d, int rm,int rg,int rb
 printf("create surface RGB565 libretro\n");
 //FIXME: why pal for 32 bits surface ?
   bitmp->format->palette->ncolors=256;
-  bitmp->format->palette->colors=malloc(256*2);
+  bitmp->format->palette->colors=(RSDL_Color *)malloc(256*2);
   bitmp->format->palette->version=0;
   bitmp->format->palette->refcount=0;
   memset(bitmp->format->palette->colors,0x0,256*2);

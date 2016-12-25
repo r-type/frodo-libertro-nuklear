@@ -124,7 +124,7 @@ int app_init()
 
     screen_surface=Retro_CreateRGBSurface32(rwidth,rheight,32,0,0,0,0);
 
-    Retro_Screen=screen_surface->pixels;
+    Retro_Screen=(unsigned int *)screen_surface->pixels;
 
     /* GUI */
     ctx = nk_sdl_init(screen_surface);
